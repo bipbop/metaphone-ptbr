@@ -9,6 +9,7 @@ const nonCharOrSpace = /[^\w ]/ig;
 function metaphone(text, additionalPhases = [
   [companyRule, ''],
 ]) {
+  if (typeof text !== 'string') return null;
   let userText = removeDiacritics(porExtenso(text))
     .toLowerCase()
     .replace(nonCharOrSpace, '');
@@ -18,7 +19,9 @@ function metaphone(text, additionalPhases = [
       userText = userText.replace(from, to);
     });
   }
-
+  if (!userText.length) {
+    return null;
+  }
   return metaphoneNative(userText);
 }
 
