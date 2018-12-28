@@ -15,10 +15,10 @@ NAN_METHOD(metaphone) {
   size_t sizeArg;
   size_t sizeArgEnc;
   size_t sizeArgCpy;
-  
+
   arg = *Utf8String(info[0]->ToString());
   sizeArg = arg.length();
-  
+
   sizeArgCpy = ((sizeArg + 1) * sizeof(char));
   argCpy = (char *)malloc(sizeArgCpy);
   bzero(argCpy, sizeArgCpy);
@@ -39,7 +39,7 @@ NAN_METHOD(metaphone) {
   } else {
     returnValue.Set(Null());
   }
-  
+
   free(metastr);
   metastr = NULL;
 

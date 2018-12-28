@@ -22,7 +22,8 @@ typedef struct {
 Metastring *metastring_create(char *init_str) {
   Metastring *s = (Metastring *)malloc(sizeof(Metastring));
   bzero(s, 1 * sizeof(Metastring));
-  if (init_str == NULL) return s;
+  if (init_str == NULL)
+    return s;
 
   s->bufsize = (strlen(init_str) + 1) * sizeof(char);
   s->str = (char *)malloc(s->bufsize);
@@ -33,7 +34,7 @@ Metastring *metastring_create(char *init_str) {
   return s;
 }
 
-void metastring_destroy(Metastring *s,  ushort preserve_string) {
+void metastring_destroy(Metastring *s, ushort preserve_string) {
   if (s == NULL) {
     return;
   }
@@ -162,7 +163,8 @@ wchar_t get_simplified_at(wchar_t *s, uint pos) {
 }
 
 size_t metastring_buffer_length(Metastring *metastring) {
-  if (!metastring->bufsize) return 0;
+  if (!metastring->bufsize)
+    return 0;
   return (metastring->bufsize / sizeof(char)) - 1;
 }
 
@@ -209,14 +211,16 @@ char *metaphone_ptbr(const wchar_t *str, const int max_length) {
   wchar_t last_char = L'\0';
   wchar_t ahead_char = L'\0';
 
-  if (str == NULL) return NULL;
+  if (str == NULL)
+    return NULL;
 
   tmp = wcsdup(str);
   original = make_upper_clean(tmp);
   free(tmp);
   tmp = NULL;
 
-  if (!original) return NULL;
+  if (!original)
+    return NULL;
 
   metastring = metastring_create(NULL);
   length = wcslen(original);
@@ -224,238 +228,227 @@ char *metaphone_ptbr(const wchar_t *str, const int max_length) {
   while (current < length) {
     current_char = get_simplified_at(original, current);
     switch (current_char) {
-      case 'A':
-      case 'E':
-      case 'I':
-      case 'O':
-      case 'U':
-        if (WORD_EDGE(last_char))
-          metastring_add_char(metastring, current_char);
-        break;
-
-      case 'L':
-        ahead_char = get_at(original, current + 1);
-        if (ahead_char == 'H')
-          metastring_add_char(metastring, '1');
-        else
-            if (is_vowel(ahead_char) || WORD_EDGE(last_char))
-          metastring_add_char(metastring, 'L');
-        break;
-      case 'T':
-      case 'P':
-        ahead_char = get_at(original, current + 1);
-        if (ahead_char == 'H') {
-          if (current_char == 'P')
-            metastring_add_char(metastring, 'F');
-          else
-            metastring_add_char(metastring, 'T');
-          current++;
-          break;
-        }
-      /* FALLTHRU */
-      case 'B':
-      case 'D':
-      case 'F':
-      case 'J':
-      case 'K':
-      case 'M':
-      case 'V':
+    case 'A':
+    case 'E':
+    case 'I':
+    case 'O':
+    case 'U':
+      if (WORD_EDGE(last_char))
         metastring_add_char(metastring, current_char);
-        break;
-      case 'G':
-        ahead_char = get_simplified_at(original, current + 1);
-        switch (ahead_char) {
-        case 'H':
-          if (!is_vowel(get_simplified_at(original, current + 2))) {
-            metastring_add_char(metastring, 'G');
-          }
-        /* FALLTHRU */
-        case 'E':
-        case 'I':
-          metastring_add_char(metastring, 'J');
-          break;
-        default:
-          metastring_add_char(metastring, 'G');
-          break;
-        }
-        break;
-      case 'R':
-        ahead_char = get_simplified_at(original, current + 1);
-        if (WORD_EDGE(last_char) || WORD_EDGE(ahead_char)) {
-          metastring_add_char(metastring, '2');
-        } else if (ahead_char == 'R') {
-          metastring_add_char(metastring, '2');
-          current++;
-        }
-        else if (is_vowel(last_char) && is_vowel(ahead_char)) {
-          metastring_add_char(metastring, 'R');
-          current++;
-        } else
-          metastring_add_char(metastring, 'R');
-        break;
-      case 'Z':
-        ahead_char = get_at(original, current + 1);
-        if (WORD_EDGE(ahead_char))
-          metastring_add_char(metastring, 'S');
+      break;
+
+    case 'L':
+      ahead_char = get_at(original, current + 1);
+      if (ahead_char == 'H')
+        metastring_add_char(metastring, '1');
+      else if (is_vowel(ahead_char) || WORD_EDGE(last_char))
+        metastring_add_char(metastring, 'L');
+      break;
+    case 'T':
+    case 'P':
+      ahead_char = get_at(original, current + 1);
+      if (ahead_char == 'H') {
+        if (current_char == 'P')
+          metastring_add_char(metastring, 'F');
         else
-          metastring_add_char(metastring, 'Z');
-        break;
-      case 'N':
-        ahead_char = get_at(original, current + 1);
-        if (WORD_EDGE(ahead_char)) {
-          metastring_add_char(metastring, 'M');
-        }
-        else if (ahead_char == 'H') {
-          metastring_add_char(metastring, '3');
-          current++;
-        }
-        else if (last_char != 'N') {
-          metastring_add_char(metastring, 'N');
-        }
-        break;
-      case 'S':
-        ahead_char = get_simplified_at(original, current + 1);
-        if (ahead_char == 'S') {
-          metastring_add_char(metastring, 'S');
-          last_char = ahead_char;
-          current++;
-        }
-        else if (ahead_char == 'H') {
-          metastring_add_char(metastring, 'X');
-          current++;
-        }
-        else if (is_vowel(last_char) && is_vowel(ahead_char)) {
-          metastring_add_char(metastring, 'Z');
-        }
-        else if (ahead_char == 'C') {
-          wchar_t ahead2_char = get_simplified_at(original, current + 2);
-          switch (ahead2_char) {
-          case L'E':
-          case L'I':
-            metastring_add_char(metastring, 'S');
-            current += 2;
-            break;
-          case L'A':
-          case L'O':
-          case L'U':
-            metastring_add(metastring, "SK");
-            current += 2;
-            break;
-          case L'H':
-            metastring_add_char(metastring, 'X');
-            current += 2;
-            break;
-          default:
-            metastring_add_char(metastring, 'S');
-            current++;
-            break;
-          }
-        } else
-          metastring_add_char(metastring, 'S');
-        break;
-      case 'X': {
-        wchar_t last2_char = get_at(original, current - 2);
-        ahead_char = get_simplified_at(original, current + 1);
-        if (WORD_EDGE(ahead_char)) {
-          metastring_add_char(metastring, 'X');
-        }
-        else if (last_char == 'E') {
-          if (is_vowel(ahead_char)) {
-            if (WORD_EDGE(last2_char)) {
-              metastring_add_char(metastring, 'Z');
-            } else
-              switch (ahead_char) {
-              case 'E':
-              case 'I':
-                metastring_add_char(metastring, 'X');
-                current++;
-                break;
-              default:
-                metastring_add(metastring, "KS");
-                current++;
-                break;
-              }
-          }
-          else if (ahead_char == 'C') {
-            metastring_add_char(metastring, 'S');
-            current++;
-          } else if (ahead_char == 'P' || ahead_char == 'T')
-            metastring_add_char(metastring, 'S');
-          else
-            metastring_add(metastring, "KS");
-        }
-        else if (is_vowel(last_char)) {
-          switch (last2_char) {
-          case 'A':
-          case 'E':
-          case 'I':
-          case 'O':
-          case 'U':
-          case 'C':
-          case 'K':
-          case 'G':
-          case 'L':
-          case 'R':
-          case 'X':
-            metastring_add_char(metastring, 'X');
-            break;
-          default:
-            metastring_add(metastring, "KS");
-            break;
-          }
-        }
-        else
-          metastring_add_char(metastring, 'X');
-      } break;
-      case 'C':
-        ahead_char = get_simplified_at(original, current + 1);
-        switch (ahead_char) {
-        case 'E':
-        case 'I':
-          metastring_add_char(metastring, 'S');
-          break;
-        case 'H':
-          if (get_simplified_at(original, current + 2) == 'R')
-            metastring_add_char(metastring, 'K');
-          else
-            metastring_add_char(metastring, 'X');
-          current++;
-          break;
-        case 'Q':
-        case 'K':
-          break;
-        default:
-          metastring_add_char(metastring, 'K');
-          break;
-        }
-        break;
-      case 'H':
-        if (WORD_EDGE(last_char)) {
-          ahead_char = get_simplified_at(original, current + 1);
-          if (is_vowel(ahead_char)) {
-            metastring_add_char(metastring, ahead_char);
-            current++;
-          }
-        }
-        break;
-      case 'Q':
-        metastring_add_char(metastring, 'K');
-        break;
-      case 'W':
-        ahead_char = get_simplified_at(original, current + 1);
-        if (is_vowel(ahead_char))
-          metastring_add_char(metastring, 'V');
-        break;
-      case L'Ç':
-        metastring_add_char(metastring, 'S');
+          metastring_add_char(metastring, 'T');
+        current++;
         break;
       }
+    /* FALLTHRU */
+    case 'B':
+    case 'D':
+    case 'F':
+    case 'J':
+    case 'K':
+    case 'M':
+    case 'V':
+      metastring_add_char(metastring, current_char);
+      break;
+    case 'G':
+      ahead_char = get_simplified_at(original, current + 1);
+      switch (ahead_char) {
+      case 'H':
+        if (!is_vowel(get_simplified_at(original, current + 2))) {
+          metastring_add_char(metastring, 'G');
+        }
+      /* FALLTHRU */
+      case 'E':
+      case 'I':
+        metastring_add_char(metastring, 'J');
+        break;
+      default:
+        metastring_add_char(metastring, 'G');
+        break;
+      }
+      break;
+    case 'R':
+      ahead_char = get_simplified_at(original, current + 1);
+      if (WORD_EDGE(last_char) || WORD_EDGE(ahead_char)) {
+        metastring_add_char(metastring, '2');
+      } else if (ahead_char == 'R') {
+        metastring_add_char(metastring, '2');
+        current++;
+      } else if (is_vowel(last_char) && is_vowel(ahead_char)) {
+        metastring_add_char(metastring, 'R');
+        current++;
+      } else
+        metastring_add_char(metastring, 'R');
+      break;
+    case 'Z':
+      ahead_char = get_at(original, current + 1);
+      if (WORD_EDGE(ahead_char))
+        metastring_add_char(metastring, 'S');
+      else
+        metastring_add_char(metastring, 'Z');
+      break;
+    case 'N':
+      ahead_char = get_at(original, current + 1);
+      if (WORD_EDGE(ahead_char)) {
+        metastring_add_char(metastring, 'M');
+      } else if (ahead_char == 'H') {
+        metastring_add_char(metastring, '3');
+        current++;
+      } else if (last_char != 'N') {
+        metastring_add_char(metastring, 'N');
+      }
+      break;
+    case 'S':
+      ahead_char = get_simplified_at(original, current + 1);
+      if (ahead_char == 'S') {
+        metastring_add_char(metastring, 'S');
+        last_char = ahead_char;
+        current++;
+      } else if (ahead_char == 'H') {
+        metastring_add_char(metastring, 'X');
+        current++;
+      } else if (is_vowel(last_char) && is_vowel(ahead_char)) {
+        metastring_add_char(metastring, 'Z');
+      } else if (ahead_char == 'C') {
+        wchar_t ahead2_char = get_simplified_at(original, current + 2);
+        switch (ahead2_char) {
+        case L'E':
+        case L'I':
+          metastring_add_char(metastring, 'S');
+          current += 2;
+          break;
+        case L'A':
+        case L'O':
+        case L'U':
+          metastring_add(metastring, "SK");
+          current += 2;
+          break;
+        case L'H':
+          metastring_add_char(metastring, 'X');
+          current += 2;
+          break;
+        default:
+          metastring_add_char(metastring, 'S');
+          current++;
+          break;
+        }
+      } else
+        metastring_add_char(metastring, 'S');
+      break;
+    case 'X': {
+      wchar_t last2_char = get_at(original, current - 2);
+      ahead_char = get_simplified_at(original, current + 1);
+      if (WORD_EDGE(ahead_char)) {
+        metastring_add_char(metastring, 'X');
+      } else if (last_char == 'E') {
+        if (is_vowel(ahead_char)) {
+          if (WORD_EDGE(last2_char)) {
+            metastring_add_char(metastring, 'Z');
+          } else
+            switch (ahead_char) {
+            case 'E':
+            case 'I':
+              metastring_add_char(metastring, 'X');
+              current++;
+              break;
+            default:
+              metastring_add(metastring, "KS");
+              current++;
+              break;
+            }
+        } else if (ahead_char == 'C') {
+          metastring_add_char(metastring, 'S');
+          current++;
+        } else if (ahead_char == 'P' || ahead_char == 'T')
+          metastring_add_char(metastring, 'S');
+        else
+          metastring_add(metastring, "KS");
+      } else if (is_vowel(last_char)) {
+        switch (last2_char) {
+        case 'A':
+        case 'E':
+        case 'I':
+        case 'O':
+        case 'U':
+        case 'C':
+        case 'K':
+        case 'G':
+        case 'L':
+        case 'R':
+        case 'X':
+          metastring_add_char(metastring, 'X');
+          break;
+        default:
+          metastring_add(metastring, "KS");
+          break;
+        }
+      } else
+        metastring_add_char(metastring, 'X');
+    } break;
+    case 'C':
+      ahead_char = get_simplified_at(original, current + 1);
+      switch (ahead_char) {
+      case 'E':
+      case 'I':
+        metastring_add_char(metastring, 'S');
+        break;
+      case 'H':
+        if (get_simplified_at(original, current + 2) == 'R')
+          metastring_add_char(metastring, 'K');
+        else
+          metastring_add_char(metastring, 'X');
+        current++;
+        break;
+      case 'Q':
+      case 'K':
+        break;
+      default:
+        metastring_add_char(metastring, 'K');
+        break;
+      }
+      break;
+    case 'H':
+      if (WORD_EDGE(last_char)) {
+        ahead_char = get_simplified_at(original, current + 1);
+        if (is_vowel(ahead_char)) {
+          metastring_add_char(metastring, ahead_char);
+          current++;
+        }
+      }
+      break;
+    case 'Q':
+      metastring_add_char(metastring, 'K');
+      break;
+    case 'W':
+      ahead_char = get_simplified_at(original, current + 1);
+      if (is_vowel(ahead_char))
+        metastring_add_char(metastring, 'V');
+      break;
+    case L'Ç':
+      metastring_add_char(metastring, 'S');
+      break;
+    }
     current++;
     last_char = current_char;
   }
 
   free(original);
-  
+
   metacode = metastring->str;
   metastring_destroy(metastring, 1);
   return metacode;
