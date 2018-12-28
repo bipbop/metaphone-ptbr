@@ -60,7 +60,7 @@ void metastring_buffer_increase(Metastring *s, int chars_needed) {
   }
 }
 
-wchar_t toUpper(const wchar_t d) {
+wchar_t to_upper(const wchar_t d) {
   wchar_t c;
 
   c = (wchar_t)towupper((wint_t)d);
@@ -117,7 +117,7 @@ wchar_t *make_upper_clean(wchar_t *i) {
   /* transforma todos em maiúsculas, com algumas simplificações */
   aux = i;
   while (*aux) {
-    *aux = toUpper(*aux);
+    *aux = to_upper(*aux);
     aux++;
   }
 
