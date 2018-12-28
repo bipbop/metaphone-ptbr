@@ -106,8 +106,4 @@ char *Metaphone_PTBR(const wchar_t *str, const int max_length);
 char *Metaphone_PTBR_s(const wchar_t *str, const int max_length,
                        const wchar_t separator);
 
-#define META_MALLOC(v, n, t) (v = (t *)malloc(((n) * sizeof(t))))
-#define META_REALLOC(v, n, t) (v = (t *)realloc((v), ((n) * sizeof(t))))
-#define META_FREE(x) free((x))
-
 #endif

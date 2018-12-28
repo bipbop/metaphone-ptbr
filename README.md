@@ -1,4 +1,4 @@
-# metaphone-ptbr@1.0.2
+# metaphone-ptbr@1.0.3
 
 
 Algoritmo de Metaphone para a língua portuguesa praticada no Brasil, agradecimentos para [@cjordao](https://metaphoneptbr.sourceforge.io) que escreveu o metaphone-ptbr em C. Utilizado em muitas aplicações Python PostgreSQL e PHP, agora também Node. :heart_eyes:

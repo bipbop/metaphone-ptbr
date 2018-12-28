@@ -16,8 +16,10 @@ NAN_METHOD(metaphone) {
     return;
   }
 
+  size_t sizeofString = stringArgumentLength * sizeof(wchar_t);
   wchar_t *stringArgumentEncoded =
-      (wchar_t *)malloc(stringArgumentLength * sizeof(wchar_t));
+      (wchar_t *)malloc(sizeofString);
+  bzero(stringArgumentEncoded, sizeofString);
   std::mbstowcs(stringArgumentEncoded, stringArgument.c_str(),
                 stringArgumentLength);
   char *metaphone = Metaphone_PTBR(stringArgumentEncoded, stringArgumentLength);

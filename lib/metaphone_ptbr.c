@@ -71,8 +71,9 @@ metastring *NewMetaString(char *init_str) {
   metastring *s;
   char empty_string[] = "";
 
-  META_MALLOC(s, 1, metastring);
+  s = (metastring *)malloc(sizeof(metastring));
   assert(s != NULL);
+  bzero(s, 1 * sizeof(metastring));
 
   if (init_str == NULL)
     init_str = empty_string;
@@ -80,8 +81,9 @@ metastring *NewMetaString(char *init_str) {
   /* preallocate a bit more for potential growth */
   s->bufsize = s->length + 7;
 
-  META_MALLOC(s->str, s->bufsize, char);
+  s->str = (char *)malloc(s->bufsize * sizeof(char));
   assert(s->str != NULL);
+  bzero(s->str, s->bufsize * sizeof(char));
 
   // strncpy(s->str, init_str, s->length + 1);
   memcpy(s->str, init_str, s->length + 1);
@@ -94,16 +96,20 @@ void DestroyMetaString(metastring *s) {
   if (s == NULL)
     return;
 
-  if (s->free_string_on_destroy && (s->str != NULL))
-    META_FREE(s->str);
+  if (s->free_string_on_destroy && (s->str != NULL)) {
+    free(s->str);
+    s->str = NULL;
+  }
 
-  META_FREE(s);
+  free(s);
+  s = NULL;
 }
 
 void IncreaseBuffer(metastring *s, int chars_needed) {
-  META_REALLOC(s->str, (s->bufsize + chars_needed + 10), char);
+  s->str = (char *)realloc(s->str, (s->bufsize + chars_needed) * sizeof(char));
   assert(s->str != NULL);
-  s->bufsize = s->bufsize + chars_needed + 10;
+  bzero(s->str + s->bufsize, chars_needed * sizeof(char));
+  s->bufsize = s->bufsize + chars_needed;
 }
 
 /*
@@ -176,14 +182,15 @@ wchar_t *MakeUpperAndClean(wchar_t *i) {
   }
 
   /* copia para o novo buffer, eliminando os duplicados. */
-  META_MALLOC(s, wcslen(i) + 1, wchar_t);
-  if (!s)
-    return (wchar_t *)NULL;
+  s = (wchar_t *)malloc((wcslen(i) + 1) * sizeof(wchar_t));
+  assert(s != NULL);
+  bzero(s, wcslen(i) + 1 * sizeof(char));
 
   aux = s;
   *aux = *i;
   aux++;
   i++;
+
   for (; *i; i++) {
 
     /* clean doubled chars. Not needed in portuguese, except 'R' and 'S' */
@@ -272,7 +279,6 @@ char *Metaphone_PTBR_s(const wchar_t *str, const int max_length,
   wchar_t *original = NULL, *tmp = NULL;
   metastring *primary = NULL;
   int current = 0;
-  // int			last		= 0;
   int count = 0;
   char *code = NULL;
   wchar_t current_char = L'\0', last_char = L'\0', ahead_char = L'\0';
@@ -282,14 +288,13 @@ char *Metaphone_PTBR_s(const wchar_t *str, const int max_length,
 
   /* we need the real length and last prior to padding */
   length = wcslen(str);
-  // last 	 = length - 1;
   primary = NewMetaString("");
 
   /* let's everything be uppercase. */
-  //	original = MakeUpperAndClean((wchar_t *)wcsdup(str));
   tmp = wcsdup(str);
   original = MakeUpperAndClean(tmp);
   free(tmp);
+  tmp = NULL;
   if (!original)
     return NULL;
 
@@ -362,7 +367,8 @@ char *Metaphone_PTBR_s(const wchar_t *str, const int max_length,
              caso contrário segue o fluxo abaixo. */
           if (!isVowel(GetSimplifiedAt(original, current + 2))) {
             MetaphAddChr(primary, 'G');
-            break;
+            /* acho que aqui deveria haver um break, coloquei mas comentei */
+            // break;
           }
         /* FALLTHRU */
         case 'E':
@@ -655,12 +661,16 @@ char *Metaphone_PTBR_s(const wchar_t *str, const int max_length,
 
   primary->str[primary->length] = '\0';
 
-  META_MALLOC(code, current + 1, char);
+  code = (char *)malloc((current + 1) * sizeof(char));
+  assert(code != NULL);
+  bzero(code, (current + 1) * sizeof(char));
+
   if (!code)
     return NULL;
   memcpy(code, primary->str, current);
 
-  META_FREE(original);
+  free(original);
+  original = NULL;
   DestroyMetaString(primary);
 
   return code;
