@@ -2,7 +2,7 @@ const { remove: removeDiacritics } = require('diacritics');
 const porExtenso = require('por-extenso');
 const { ansiEscapeCodes, zeroWidthCharacters } = require('printable-characters');
 // eslint-disable-next-line import/no-unresolved
-const { metaphone: metaphoneNative } = require('./build/Release/addon');
+const { metaphone: metaphoneNative } = require('bindings')('addon');
 
 const companyRule = /\s(SA|LTDA|MEI|ME|EPP|EIRELI)(\s|$)/ig;
 const nonCharOrSpace = /[^\w ]/ig;

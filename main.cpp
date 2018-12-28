@@ -8,27 +8,44 @@ extern "C" {
 using namespace Nan; // NOLINT(build/namespaces)
 
 NAN_METHOD(metaphone) {
-  std::string stringArgument = *v8::String::Utf8Value(info[0]->ToString());
+  std::string arg;
+  char *metastr;
+  char *argCpy;
+  wchar_t *argEnc;
+  size_t sizeArg;
+  size_t sizeArgEnc;
+  size_t sizeArgCpy;
+  
+  arg = *Utf8String(info[0]->ToString());
+  sizeArg = arg.length();
+  
+  sizeArgCpy = ((sizeArg + 1) * sizeof(char));
+  argCpy = (char *)malloc(sizeArgCpy);
+  bzero(argCpy, sizeArgCpy);
 
-  auto stringArgumentLength = stringArgument.length();
-  if (!stringArgumentLength) {
-    ThrowError("first argument cannot be empty");
-    return;
+  sizeArgEnc = ((sizeArg + 1) * sizeof(wchar_t));
+  argEnc = (wchar_t *)malloc(sizeArgEnc);
+  bzero(argEnc, sizeArgEnc);
+
+  strncpy(argCpy, arg.c_str(), sizeArg);
+  mbstowcs(argEnc, argCpy, sizeArg);
+  free(argCpy);
+
+  metastr = metaphone_ptbr(argEnc, sizeArg);
+
+  auto returnValue = info.GetReturnValue();
+  if (metastr != NULL) {
+    returnValue.Set(New(metastr).ToLocalChecked());
+  } else {
+    returnValue.Set(Null());
   }
+  
+  free(metastr);
+  metastr = NULL;
 
-  size_t sizeofString = stringArgumentLength * sizeof(wchar_t);
-  wchar_t *stringArgumentEncoded =
-      (wchar_t *)malloc(sizeofString);
-  bzero(stringArgumentEncoded, sizeofString);
-  std::mbstowcs(stringArgumentEncoded, stringArgument.c_str(),
-                stringArgumentLength);
-  char *metaphone = Metaphone_PTBR(stringArgumentEncoded, stringArgumentLength);
-  free(stringArgumentEncoded);
-
-  info.GetReturnValue().Set(New(metaphone).ToLocalChecked());
-  free(metaphone);
+  free(argEnc);
+  argEnc = NULL;
 }
 
 NAN_MODULE_INIT(Initialize) { NAN_EXPORT(target, metaphone); }
-
 NODE_MODULE(addon, Initialize);
