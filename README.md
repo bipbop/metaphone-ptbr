@@ -37,4 +37,4 @@ This package is provided in these module formats:
 
 
 ## License
-[MIT]()
+[MIT](https://opensource.org/licenses/MIT)
