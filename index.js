@@ -9,8 +9,9 @@ const nonCharOrSpace = /[^\w ]/ig;
 
 function metaphone(text, additionalPhases = [
   [companyRule, ''],
-]) {
+], limit = 255) {
   if (typeof text !== 'string') return null;
+  if (text.length > limit) return null;
   let userText = removeDiacritics(porExtenso(text
     .replace(ansiEscapeCodes, ' ')
     .replace(zeroWidthCharacters, ' ')))
