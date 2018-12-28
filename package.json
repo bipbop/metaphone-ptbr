@@ -19,7 +19,7 @@
     "diacritics": "^1.3.0",
     "nan": "^2.12.1",
     "node-gyp": "^3.8.0",
-    "por-extenso": "^1.2.1",
+    "por-extenso": "^1.2.1"
   },
   "gypfile": true,
   "scripts": {
