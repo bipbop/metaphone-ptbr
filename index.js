@@ -1,5 +1,6 @@
 const { remove: removeDiacritics } = require('diacritics');
 const porExtenso = require('por-extenso');
+const { ansiEscapeCodes, zeroWidthCharacters } = require('printable-characters');
 // eslint-disable-next-line import/no-unresolved
 const { metaphone: metaphoneNative } = require('./build/Release/addon');
 
@@ -10,7 +11,9 @@ function metaphone(text, additionalPhases = [
   [companyRule, ''],
 ]) {
   if (typeof text !== 'string') return null;
-  let userText = removeDiacritics(porExtenso(text))
+  let userText = removeDiacritics(porExtenso(text
+    .replace(ansiEscapeCodes, ' ')
+    .replace(zeroWidthCharacters, ' ')))
     .toLowerCase()
     .replace(nonCharOrSpace, '');
 
