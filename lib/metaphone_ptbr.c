@@ -151,13 +151,13 @@ wchar_t *make_upper_clean(wchar_t *i) {
 }
 
 wchar_t get_at(wchar_t *s, uint pos) {
-  if ((pos < 0) || (pos >= wcslen(s)))
+  if ((pos >= wcslen(s)))
     return '\0';
   return ((wchar_t) * (s + pos));
 }
 
 wchar_t get_simplified_at(wchar_t *s, uint pos) {
-  if ((pos < 0) || (pos >= wcslen(s)))
+  if ((pos >= wcslen(s)))
     return '\0';
   return ((wchar_t) * (s + pos));
 }
