@@ -6,7 +6,7 @@ Algoritmo de Metaphone para a língua portuguesa praticada no Brasil, agradecime
 
 ```js
 const metaphone = require('metaphone-ptbr');
-console.log(metaphone('Casas Bahia')); # KZSB
+console.log(metaphone('Casas Bahia')); // KZSB
 ```
 
 ## Installation
