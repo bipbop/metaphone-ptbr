@@ -16,7 +16,7 @@ NAN_METHOD(metaphone) {
   size_t sizeArgEnc;
   size_t sizeArgCpy;
 
-  arg = *Utf8String(info[0]->ToString());
+  arg = *Utf8String(info[0]->ToString(Nan::GetCurrentContext()).FromMaybe(v8::Local<v8::String>()));
   sizeArg = arg.length();
 
   sizeArgCpy = ((sizeArg + 1) * sizeof(char));

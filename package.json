@@ -1,6 +1,6 @@
 {
   "name": "metaphone-ptbr",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Algoritmo de Metaphone para a língua portuguesa.",
   "main": "index.js",
   "repository": "https://github.com/bipbop/metaphone-ptbr",
