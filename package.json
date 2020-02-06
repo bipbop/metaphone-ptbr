@@ -1,17 +1,17 @@
 {
   "name": "metaphone-ptbr",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Algoritmo de Metaphone para a língua portuguesa.",
   "main": "index.js",
   "repository": "https://github.com/bipbop/metaphone-ptbr",
   "author": "Lucas Fernando Amorim <lf.amorim@bipbop.com.br>",
   "license": "MIT",
   "devDependencies": {
-    "eslint": "^6.2.2",
+    "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-import": "^2.20.1",
     "fuzzer": "^0.2.1",
-    "jest": "^24.9.0",
+    "jest": "^25.1.0",
     "pretty-bytes": "^5.3.0",
     "random-js": "^2.1.0"
   },
@@ -19,7 +19,7 @@
     "bindings": "^1.5.0",
     "diacritics": "^1.3.0",
     "nan": "^2.14.0",
-    "node-gyp": "^5.0.3",
+    "node-gyp": "^6.1.0",
     "por-extenso": "^1.2.1",
     "printable-characters": "^1.0.42"
   },
