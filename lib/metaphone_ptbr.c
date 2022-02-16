@@ -34,7 +34,7 @@ Metastring *metastring_create(char *init_str) {
   return s;
 }
 
-void metastring_destroy(Metastring *s, ushort preserve_string) {
+void metastring_destroy(Metastring *s, short preserve_string) {
   if (s == NULL) {
     return;
   }
@@ -150,13 +150,13 @@ wchar_t *make_upper_clean(wchar_t *i) {
   return s;
 }
 
-wchar_t get_at(wchar_t *s, uint pos) {
+wchar_t get_at(wchar_t *s, int pos) {
   if ((pos >= wcslen(s)))
     return '\0';
   return ((wchar_t) * (s + pos));
 }
 
-wchar_t get_simplified_at(wchar_t *s, uint pos) {
+wchar_t get_simplified_at(wchar_t *s, int pos) {
   if ((pos >= wcslen(s)))
     return '\0';
   return ((wchar_t) * (s + pos));
