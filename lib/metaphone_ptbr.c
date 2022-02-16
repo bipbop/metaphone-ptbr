@@ -150,13 +150,13 @@ wchar_t *make_upper_clean(wchar_t *i) {
   return s;
 }
 
-wchar_t get_at(wchar_t *s, int pos) {
+wchar_t get_at(wchar_t *s, long pos) {
   if ((pos >= wcslen(s)))
     return '\0';
   return ((wchar_t) * (s + pos));
 }
 
-wchar_t get_simplified_at(wchar_t *s, int pos) {
+wchar_t get_simplified_at(wchar_t *s, long pos) {
   if ((pos >= wcslen(s)))
     return '\0';
   return ((wchar_t) * (s + pos));
