@@ -6,6 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <wchar.h>
+#include <sys/types.h>
 #include <wctype.h>
 
 #include "metaphone_ptbr.h"
